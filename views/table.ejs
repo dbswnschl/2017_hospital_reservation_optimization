@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Main Page</title>
+	<link rel='stylesheet' href='/stylesheets/style_table.css' type='text/css'>
+  </head>
+  <body>
+    	<h1> 실시간 예약 환자 목록</h1>
+	<h2> 현재 예약중인 환자 수 :&nbsp; <%= num %>명</h2>
+	<table border='1px',align='center', class='table8_2'>
+		<tr align='center'>
+			<td>환자순서</td>
+			<td>이름</td>
+			<td>예약시간</td>
+			<td>증상</td>
+			<td>상태</td>
+		</tr>
+		<%
+		for(var i=0 ; i<lists.length ; i++){
+			
+		
+ %>		<tr>
+			<td> <%= i+1%></td>
+			<td> <%= acc[lists[i].usernumber].username%></td>
+			<td> <%= lists[i].reservationtime%></td>
+			<td> <%= lists[i].part%></td>
+			<td> <% if(lists[i].status == '0')%>예약중</td>
+		</tr>
+<% } %>
+	</table>
+	
+
+  </body>
+</html>

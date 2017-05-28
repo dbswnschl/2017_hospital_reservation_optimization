@@ -1,0 +1,36 @@
+
+  #leftMenu {
+   height: 60px;
+   width: 200px;
+    }
+  #leftMenu ul li {
+     list-style: none;
+     background-color: #2d2d2d;
+     width: 200px;
+     line-height: 30px;
+     vertical-align: middle;
+     text-align: center;
+   }
+  #leftMenu a {
+    text-decoration:none;
+    color: white;
+    display: block;
+    width: 200px;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: "Trebuchet MS", Dotum, Arial;
+    }
+   #leftMenu a:hover {
+    color: red;
+    background-color: #4d4d4d;
+    }
+#iframe1{
+  align:middle;
+  frameborder:0;
+  scrolling:auto;
+  position:relative;
+  margin-left: 20%;
+  text-align: center;
+  width:800px;
+  height: 1024px;
+}

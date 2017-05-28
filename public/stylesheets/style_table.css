@@ -1,0 +1,46 @@
+.table8_2 table {
+	width:100%;
+	margin:15px 0
+}
+.table8_2 th {
+	background-color:#ACF3FF;
+	background:-o-linear-gradient(90deg, #ACF3FF, #cff8fe);
+	background:-moz-linear-gradient( center top, #ACF3FF 5%, #cff8fe 100% );
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ACF3FF), color-stop(1, #cff8fe) );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ACF3FF', endColorstr='#cff8fe');
+	color:#000000
+}
+.table8_2,.table8_2 th,.table8_2 td
+{
+	font-size:0.95em;
+	text-align:center;
+	padding:4px;
+	border:1px solid #efefef;
+	border-collapse:collapse
+}
+.table8_2 tr:nth-child(odd){
+	background-color:#e3fbfe;
+	background:-o-linear-gradient(90deg, #e3fbfe, #f9fefe);
+	background:-moz-linear-gradient( center top, #e3fbfe 5%, #f9fefe 100% );
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #e3fbfe), color-stop(1, #f9fefe) );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#e3fbfe', endColorstr='#f9fefe');
+}
+.table8_2 tr:nth-child(even){
+	background-color:#fdfdfd;
+}
+dl {
+   position: relative;
+}
+dt {
+   float: left;
+   z-index: 9;
+   position: relative;
+}
+dd {
+   position: absolute;
+   padding-top: 30px;
+   background-color: #f3f3f3;
+}
+dd.hidden {
+   display: none;
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Main Page</title>
+	<link rel='stylesheet' href='/stylesheets/style_table.css' type='text/css'>
+  </head>
+  <body>
+    	<h1> 실시간 대기 환자 목록</h1>
+	<h2> 현재 대기중인 환자 수 :&nbsp; <%= num %>명</h2>
+	<div style="text-align:center;">
+	<table border='1px',align='center', class='table8_2' align='center' style="font-size:20pt;">
+		<tr align='center'>
+			<td>대기순서</td>
+			<td>이름</td>
+			<td>등록시간</td>
+			<td>증상</td>
+			<td>상태</td>
+		</tr>
+		<%
+		var p = 0;
+		var max = 0;
+		if(page >= 1){
+			p = page - 1;
+		}
+		if(lists.length / 5 > 1){
+			max = 5;
+			if(lists.length < (p+1)*5 ){
+				max = (p+1)*5-lists.length -1;
+			}
+		}else {
+			max = lists.length;
+		}
+		for(var i=0+(p*5) ; i<max+(p*5) ; i++){
+			
+		
+ %>		<tr>
+			<td> <%= i+1%></td>
+			<td> <%= acc[lists[i].usernumber-1].username%></td>
+			<td> <%= timearr[i][3]%>-<%= timearr[i][1]%>-<%= timearr[i][2]%> <%= timearr[i][4]%></td>
+			<td> <%= lists[i].part%></td>
+			<td> <% if(lists[i].status == '0'){%>대기중<%}else {%>진료중<%}%></td>
+		</tr>
+<% } %>
+	</table>
+	<b style="font-size:20pt; ">
+	<% 
+	if(lists.length / 5 > 1){
+		for(var i = 1 ; i < lists.length / 5 +1; i ++){
+			if(i == p+1){%>
+			<%= i%>
+			<%}else {%>
+			<a href='/pc/table2/<%= i%>' ><%= i%></a>
+			<%}
+		}
+	}
+	%></b>
+</div>
+  </body>
+</html>
