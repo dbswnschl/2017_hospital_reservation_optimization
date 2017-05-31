@@ -140,4 +140,96 @@ app.get('/add_reservation', function (req, res) {
     res.send(`대기열에 추가 하였습니다.`)
   });
 });
+app.get('/test',function(req,res){
+  var arr = new Array();
+  var pages = req.params.pages;
+  connection.query(`SELECT * FROM waiting WHERE status = '0' OR status = '1';`, function (error, row, field) {
+    if (error) {
+      console.log("[ERROR:table2 01]\n" + error);
+      res.send(error);
+    } else {
+      var num = row.length;
+      var people = row;
+      connection.query(`SELECT * FROM accounts ;`, function (err, rows, field) {
+        if (err) {
+          console.log(err);
+          res.send(err);
+        }
+        var accounts = rows;
+        for (var i = 0; i < people.length; i++) {
+          arr[i] = (people[i].wanttime + "").split(' ');
+          switch (arr[i][1]) {
+            case "January":
+              arr[i][1] = "01";
+              break;
+            case "February":
+              arr[i][1] = "02";
+              break;
+            case "March":
+              arr[i][1] = "03";
+              break;
+            case "Apr":
+              arr[i][1] = "04";
+              break;
+            case "May":
+              arr[i][1] = "05";
+              break;
+            case "June":
+              arr[i][1] = "06";
+              break;
+            case "July":
+              arr[i][1] = "07";
+              break;
+            case "August":
+              arr[i][1] = "08";
+              break;
+            case "September":
+              arr[i][1] = "09";
+              break;
+            case "October":
+              arr[i][1] = "10";
+              break;
+            case "November":
+              arr[i][1] = "11";
+              break;
+            case "December":
+              arr[i][1] = "12";
+              break;
+          }
+        }
+        res.render('test', { lists: people, num: num, acc: accounts,timearr: arr,page: pages });
+
+      });
+
+
+    }
+  });
+
+
+
+});
+app.get('/test2',function(req,res){
+  var arr = new Array();
+  connection.query(`SELECT * FROM reservation WHERE status = '0' OR status = '1';`, function (error, row, field) {
+    if (error) {
+      console.log("[ERROR:table 01]\n" + error);
+      res.send(error);
+    } else {
+      var num = row.length;
+      var people = row;
+      connection.query(`SELECT * FROM accounts ;`, function (err, rows, field) {
+        if (err) {
+          console.log(err);
+          res.send(err);
+        }
+        var accounts = rows;
+        console.log("[ERR?] " + accounts);
+		console.log("lists: " + JSON.stringify(people) + "\nacc: " + JSON.stringify(accounts));
+        res.render('test2', { lists: people, num: num, acc: accounts });
+      });
+
+
+    }
+  })
+});
 module.exports = app;

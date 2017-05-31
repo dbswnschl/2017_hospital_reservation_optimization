@@ -32,7 +32,7 @@
       TOP BAR CONTENT & NOTIFICATIONS
       *********************************************************************************************************************************************************** -->
       <!--header start-->
-         <header class="header black-bg">
+      <header class="header black-bg">
               <div class="sidebar-toggle-box">
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
@@ -196,11 +196,11 @@
               <!-- sidebar menu start-->
               <ul class="sidebar-menu" id="nav-accordion">
               
-              	  <p class="centered"><a href="profile.html"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
+              	  <p class="centered"><a href="#"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60" alt='병원 로고'></a></p>
               	  <h5 class="centered">병원 메뉴</h5>
               	  	
                   <li class="mt">
-                      <a class="active">
+                      <a href="/pc/main">
                           <i class="fa fa-dashboard"></i>
                           <span>대쉬보드</span>
                       </a>
@@ -230,18 +230,18 @@
                           <li><a  href="lock_screen.html">Lock Screen</a></li>
                       </ul>
                   </li> -->
-                  
+                
                   <li class="sub-menu">
-                      <a href="javascript:;" >
+                      <a class="active" href="javascript:;" >
                           <i class="fa fa-th"></i>
                           <span>예약 및 대기 인원 조회</span>
                       </a>
                       <ul class="sub">
-                          <li ><a  href="/pc/test">실시간 대기 환자 목록</a></li>
+                          <li class="active"><a  href="/pc/test">실시간 대기 환자 목록</a></li>
                           <li><a  href="/pc/test2">현재 예약 환자 목록</a></li>
                       </ul>
                   </li>
-                  <li class="sub-menu">
+                    <li class="sub-menu">
                       <a href="javascript:;" >
                           <i class="fa fa-tasks"></i>
                           <span>현장 예약</span>
@@ -284,18 +284,40 @@
       <!--main content start-->
       <section id="main-content">
           <section class="wrapper">
-          	<h3><i class="fa fa-angle-right"></i>대쉬보드</h3>
+          	<h3><i class="fa fa-angle-right"></i>환자 목록</h3>
 				<div class="row">
 				
 	                  <div class="col-md-12">
 	                  	  <div class="content-panel">
-	                  	  	  <h4><i class="fa fa-angle-right"></i> OO 병원에 오신것을 환영합니다.</h4>
+	                  	  	  <h4><i class="fa fa-angle-right"></i> 실시간 대기중인 환자 목록</h4>
 	                  	  	  <hr>
 		                      <table class="table">
-		                         
+		                          <thead>
+		                          <tr>
+		                              <th>#</th>
+		                              <th>이름</th>
+		                              <th><i class="fa fa-bookmark"></i>등록 시간</th>
+		                              <th><i class=" fa fa-edit"></i>증상</th>
+                                      <th>상태</th>
+		                          </tr>
+		                          </thead>
+		                          <tbody>
+                                      <%
+                                      for(var i = 0 ; i < lists.length ; i ++){
+                                          
+                                      
+                                      %>
 
-
-
+		                          <tr>
+		                                <td> <%= i+1%></td>
+                                        <td> <%= acc[lists[i].usernumber-1].username%></td>
+                                        <td> <%= timearr[i][3]%>-<%= timearr[i][1]%>-<%= timearr[i][2]%> <%= timearr[i][4]%></td>
+                                        <td> <%= lists[i].part%></td>
+                                        <td> <% if(lists[i].status == '0'){%><span class="label label-info label-mini">대기중</span><%}else if(lists[i].status =='1') {%><span class="label label-success label-mini">진료중</span><%} else {%><span class="label label-warning label-mini">진료종료</span> <% } %></td>
+		                          </tr>
+                                  <%} %>
+		                          
+		                          </tbody>
 		                      </table>
 	                  	  </div><! --/content-panel -->
 	                  </div><!-- /col-md-12 -->
