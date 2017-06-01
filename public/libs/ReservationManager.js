@@ -198,7 +198,7 @@ var ReservationManager = ReservationManager || (function() {
             },
             addReservation: function(userid, reservationtime) {
                 findFromTable(userid, reservationtime, function(id) {
-                    var expiredDatetime = parseDatetimeFromTable(reservationtime);
+                    var expiredDatetime = getExpiredDatetimeFromTable(reservationtime);
 
                     addToDictionary(id, expiredDatetime);
                 });
