@@ -12,6 +12,7 @@
     "ejs": "~2.5.6",
     "express": "~4.15.2",
     "fcm-node": "^1.2.0",
+    "moment": "^2.18.1",
     "morgan": "~1.8.1",
     "node-mysql": "^0.4.2",
     "node-schedule": "^1.2.3",
