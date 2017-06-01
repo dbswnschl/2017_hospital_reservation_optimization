@@ -6,6 +6,8 @@ var connection = mysql.connect();
 var FCM = require('fcm-node');
 var serverKey = "AIzaSyAv8u2gITuRPBipeW9aEQ-K-yTV3zxLNmA"; //인증키
 var fem = new FCM(serverKey);
+var reservationManager = require('../public/libs/ReservationManager').ReservationManager;
+
 var message = {
   to: '', //기기 토큰값
   notification: {
@@ -89,6 +91,8 @@ app.post('/add_reservation', function (req, res) {
           if (!err) {
             console.log(`INSERT INTO reservation (usernumber,part,reservationtime,status) VALUES('${row[0].id}','${purpose}','${dt}','0')`);
             console.log("[디버그]예약성공");
+
+            reservationManager.addReservation(id, dt);
 
             res.json(response);
             console.log("reservation success");

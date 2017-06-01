@@ -2,6 +2,8 @@ var express = require('express');
 var mysql = require('mysql');
 var app = express();
 
+var reservationManager = require('../public/libs/ReservationManager').ReservationManager;
+
 exports.connect = function(){
   var connection = mysql.createConnection({
   host: 'localhost',
@@ -20,5 +22,8 @@ connection.query('SELECT * FROM `accounts`', function (err, rows, fields) {
     console.log(err);
   }
   console.log('*계정서버 연동완료*');
+
+    // start reservation manager
+    reservationManager.startObserver();
 
 });
