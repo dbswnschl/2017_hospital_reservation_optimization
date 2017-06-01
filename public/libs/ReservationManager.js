@@ -5,13 +5,14 @@ var ReservationManager = ReservationManager || (function() {
 
         var mysql = require('mysql');
         var schedule = require('node-schedule');
+        var moment = require('moment-timezone');
 
         var pool;
 
         var startDatetime;
 
         var expiredHoldingMin = 30;
-        var timezoneOffsetMin = 540;
+        var timezone = "Asia/Seoul";
 
         var reservationDic = {};
         var scheduleCron;
@@ -115,9 +116,7 @@ var ReservationManager = ReservationManager || (function() {
         };
 
         var getCurrentDatetime = function() {
-            var date = new Date(new Date().getTime() + minToMSec(timezoneOffsetMin));
-
-            return date.toISOString().slice(0, 19).replace(/T/g, ' ');
+            return moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
         };
 
         var getExpiredDatetimeFromTable = function(rawReservedTimeString) {
@@ -127,17 +126,9 @@ var ReservationManager = ReservationManager || (function() {
             var hyphenSplit = String(reservedDate).split('-');
             reservedDate = hyphenSplit[2] + '-' + hyphenSplit[1] + '-' + hyphenSplit[0];
 
-            var reservedTime = spaceSplit[1] + ':00';
+            var reservedDatetime = new Date(reservedDate + " " + spaceSplit[1] + ':00');
 
-            var reservedDatetime = reservedDate + " " + reservedTime;
-
-            var expiredTimeMSec = new Date(reservedDatetime).getTime() + minToMSec(timezoneOffsetMin) + minToMSec(expiredHoldingMin);
-
-            return new Date(expiredTimeMSec).toISOString().slice(0, 19).replace(/T/g, ' ');
-        };
-
-        var minToMSec = function(min) {
-            return min * 60 * 1000;
+            return moment(reservedDatetime).tz(timezone).add(expiredHoldingMin, 'm').format("YYYY-MM-DD HH:mm:ss");
         };
 
         var remove = function(id) {
@@ -158,7 +149,7 @@ var ReservationManager = ReservationManager || (function() {
         var addToDictionary = function(id, datetime) {
             reservationDic[datetime] = id;
 
-            console.log("ReservationManager: new reservation added: " + id + " / " + datetime);
+            console.log("ReservationManager: add reservation: " + id + " / " + datetime);
         };
 
         var startCron = function() {
