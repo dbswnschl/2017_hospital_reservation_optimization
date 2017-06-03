@@ -201,7 +201,7 @@
               	  <h5 class="centered">병원 메뉴</h5>
               	  	
                   <li class="mt">
-                      <a href='/pc/main'>
+                      <a>
                           <i class="fa fa-dashboard"></i>
                           <span>대쉬보드</span>
                       </a>
@@ -292,17 +292,13 @@
 	                  	  <div class="content-panel">
 	                  	  	  <h4><i class="fa fa-angle-right"></i> 즉시 진료 예약을 합니다.</h4>
 	                  	  	  <hr>
-                                    <form action='/pc/add_reservation' method='post'>
+                                    <p>로그인 정보가 필요합니다. 가입을 안하셨다면 <a href='/pc/register'>가입하기</a>를 통해 가입 후 진행해 주세요!</p>
+                                  <form action='/pc/add_reservation' method='post'>
                                     <p>환자 아이디</p>
-                                    <input type="text"style="width:450px" name="userid" placeholder="아이디" autocomplete="off" class="form-control placeholder-no-fix"><br/>
+                                    <input type="text" name="userid" placeholder="Input your ID" autocomplete="off" class="form-control placeholder-no-fix">
                                     <p>환자 비밀번호</p>
-                                    <input type="password" style="width:450px" name="userpw" placeholder="비밀번호" autocomplete="off" class="form-control placeholder-no-fix"><br/>
-                                    <p>증상을 적어주세요.</p>
-                                    <input type="text" style="width:30%" name="part" part="아픈 부위" autocomplete="off" class="form-control placeholder-no-fix"><br/>
-                                    <button class="btn btn-theme" type="submit">Login</button>
+                                    <input type="password" name="userpw" placeholder="Input your Password" autocomplete="off" class="form-control placeholder-no-fix">
                                   </form>
-                                   <p>로그인 정보가 필요합니다. 아직 가입을 안하셨다면 <a href='/pc/register' target='_blank'>가입하기</a>를 통해 가입 후 진행해 주세요!</p>
-                                 
 	                  	  </div><! --/content-panel -->
 	                  </div><!-- /col-md-12 -->
                   
@@ -316,7 +312,7 @@
       <footer class="site-footer">
           <div class="text-center">
               2017 - Hospital_Reservation_Service
-              <a href="/pc/reservation#" class="go-top">
+              <a href="/pc/mauin#" class="go-top">
                   <i class="fa fa-angle-up"></i>
               </a>
           </div>

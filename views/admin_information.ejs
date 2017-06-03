@@ -32,7 +32,7 @@
       TOP BAR CONTENT & NOTIFICATIONS
       *********************************************************************************************************************************************************** -->
       <!--header start-->
-         <header class="header black-bg">
+      <header class="header black-bg">
               <div class="sidebar-toggle-box">
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
@@ -181,8 +181,7 @@
             </div>
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
-                    <li><a class="login" data-toggle="modal" href="#myModal">Login</a></li>
-                    <!--<li><a class="logout" href="login.html">Logout</a></li>-->
+                    <li><a class="logout" href="/pc/main">Logout</a></li>
             	</ul>
             </div>
         </header>
@@ -192,16 +191,16 @@
       MAIN SIDEBAR MENU
       *********************************************************************************************************************************************************** -->
       <!--sidebar start-->
-      <aside>
+          <aside>
           <div id="sidebar"  class="nav-collapse ">
               <!-- sidebar menu start-->
               <ul class="sidebar-menu" id="nav-accordion">
               
-              	  <p class="centered"><a href="profile.html"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
+              	  <p class="centered"><a href="#"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60" alt='병원 로고'></a></p>
               	  <h5 class="centered">병원 메뉴</h5>
               	  	
                   <li class="mt">
-                      <a href='/pc/main'>
+                      <a href="/pc/main">
                           <i class="fa fa-dashboard"></i>
                           <span>대쉬보드</span>
                       </a>
@@ -231,7 +230,7 @@
                           <li><a  href="lock_screen.html">Lock Screen</a></li>
                       </ul>
                   </li> -->
-                  
+                
                   <li class="sub-menu">
                       <a href="javascript:;" >
                           <i class="fa fa-th"></i>
@@ -242,13 +241,13 @@
                           <li><a  href="/pc/table_reservation">현재 예약 환자 목록</a></li>
                       </ul>
                   </li>
-                  <li class="sub-menu">
-                      <a  class="active" href="javascript:;" >
+                    <li class="sub-menu">
+                      <a href="javascript:;" >
                           <i class="fa fa-tasks"></i>
                           <span>현장 예약</span>
                       </a>
                       <ul class="sub">
-                          <li  class="active"><a  href="/pc/reservation">예약하기</a></li>
+                          <li><a  href="/pc/reservation">예약하기</a></li>
                       </ul>
                   </li>
                   <li class="sub-menu">
@@ -262,16 +261,16 @@
                       </ul>
                   </li>
                   <li class="sub-menu">
-                      <a data-toggle="modal" href="#myModal" >
+                      <a  class="active" href="javascript:;" >
                           <i class="fa fa-cogs"></i>
-                          <span >관리자용</span>
-                      </a><!--
+                          <span>관리자용</span>
+                      </a>
                       <ul class="sub">
-                          <li><a  data-toggle="modal" href="#myModal">환자 정보 관리</a></li>
-                          <li><a  href="gallery.html">예약 환자 관리</a></li>
-                          <li><a  href="gallery.html">대기 환자 관리</a></li>
-                          <li><a  href="todo_list.html">문의 답변 하기</a></li>
-                      </ul> -->
+                          <li class="active"><a  href="/pc/admin_information">환자 정보 관리</a></li>
+                          <li><a  href="/pc/admin_reservation">예약 환자 관리</a></li>
+                          <li><a  href="/pc/admin_waiting">대기 환자 관리</a></li>
+                          <li><a  href="/pc/admin_answer">문의 답변 하기</a></li>
+                      </ul>
                   </li>
               </ul>
               <!-- sidebar menu end-->
@@ -285,24 +284,49 @@
       <!--main content start-->
       <section id="main-content">
           <section class="wrapper">
-          	<h3><i class="fa fa-angle-right"></i>현장 예약</h3>
+          	<h3><i class="fa fa-angle-right"></i>환자 정보 관리</h3>
 				<div class="row">
 				
 	                  <div class="col-md-12">
 	                  	  <div class="content-panel">
-	                  	  	  <h4><i class="fa fa-angle-right"></i> 즉시 진료 예약을 합니다.</h4>
+	                  	  	  <h4><i class="fa fa-angle-right"></i> 등록된 환자 목록</h4>
 	                  	  	  <hr>
-                                    <form action='/pc/add_reservation' method='post'>
-                                    <p>환자 아이디</p>
-                                    <input type="text"style="width:450px" name="userid" placeholder="아이디" autocomplete="off" class="form-control placeholder-no-fix"><br/>
-                                    <p>환자 비밀번호</p>
-                                    <input type="password" style="width:450px" name="userpw" placeholder="비밀번호" autocomplete="off" class="form-control placeholder-no-fix"><br/>
-                                    <p>증상을 적어주세요.</p>
-                                    <input type="text" style="width:30%" name="part" part="아픈 부위" autocomplete="off" class="form-control placeholder-no-fix"><br/>
-                                    <button class="btn btn-theme" type="submit">Login</button>
-                                  </form>
-                                   <p>로그인 정보가 필요합니다. 아직 가입을 안하셨다면 <a href='/pc/register' target='_blank'>가입하기</a>를 통해 가입 후 진행해 주세요!</p>
-                                 
+		                      <table class="table">
+		                          <thead>
+		                          <tr>
+		                            <th>#</th>
+                                    <th>아이디</th>
+                                    <th>비밀번호</th>
+                                    <th>성명</th>
+                                    <th>생일</th>
+                                    <th>이메일</th>
+                                    <th>전화번호</th>
+                                    <th>권한(10:관리자)</th>
+                                    <th>정보수정</th>
+		                          </tr>
+		                          </thead>
+		                          <tbody>
+                                      <%
+                                      for(var i = 0 ; i < acc.length ; i ++){
+                                          
+                                      
+                                      %>
+
+		                            <tr>
+                                        <td> <%= i+1%></td>
+                                        <td> <%= acc[i].userid%></td>
+                                        <td> <%= acc[i].userpw%></td>
+                                        <td> <%= acc[i].username%></td>
+                                        <td> <%= acc[i].birth%></td>
+                                        <td> <%= acc[i].email%></td>
+                                        <td> <%= acc[i].phone%></td>
+                                        <td> <%= acc[i].auth%></td>
+                                        <td><a  data-toggle="modal" href="#myModal">수정하기</a></td>
+                                    </tr>
+                                  <%} %>
+		                          
+		                          </tbody>
+		                      </table>
 	                  	  </div><! --/content-panel -->
 	                  </div><!-- /col-md-12 -->
                   
@@ -316,7 +340,7 @@
       <footer class="site-footer">
           <div class="text-center">
               2017 - Hospital_Reservation_Service
-              <a href="/pc/reservation#" class="go-top">
+              <a href="/pc/admin_information#" class="go-top">
                   <i class="fa fa-angle-up"></i>
               </a>
           </div>
@@ -345,31 +369,41 @@
       });
 
   </script>
-  <!-- Modal -->
+<!-- Modal -->
 		          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
 		              <div class="modal-dialog">
 		                  <div class="modal-content">
 		                      <div class="modal-header">
 		                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		                          <h4 class="modal-title">병원 관계자 이십니까?</h4>
+		                          <h4 class="modal-title">환자 정보를 수정합니다</h4>
 		                      </div>
-                              <form action="/pc/login_admin" method="post">
+                              <form action="/pc/information_edit" method="post">
 		                      <div class="modal-body">
-		                          <p>관리자용 아이디를 입력해 주세요.</p>
-		                          <input type="text" name="userid" placeholder="Input your ID" autocomplete="off" class="form-control placeholder-no-fix"><br/>
-                                  <p>관리자용 비밀번호를 입력해 주세요.</p>
-                                  <input type="password" name="userpw" placeholder="Input your Password" autocomplete="off" class="form-control placeholder-no-fix">
-		                      </div>
+		                          <p>환자 아이디</p>
+		                          <input type="text" name="userid" value="ID" autocomplete="off" class="form-control placeholder-no-fix"><br/>
+                                  <p>환자 비밀번호</p>
+                                  <input type="password" name="userpw" value="Password" autocomplete="off" class="form-control placeholder-no-fix">
+		                          <p>환자 성명</p>
+                                  <input type="text" name="username" value="Name" autocomplete="off" class="form-control placeholder-no-fix">
+		                          <p>환자 생일</p>
+                                  <input type="birth" name="birth" value="Birth" autocomplete="off" class="form-control placeholder-no-fix">
+		                          <p>환자 이메일</p>
+                                  <input type="email" name="email" value="Email" autocomplete="off" class="form-control placeholder-no-fix">
+		                          <p>환자 전화번호</p>
+                                  <input type="phone" name="phone" value="Phone" autocomplete="off" class="form-control placeholder-no-fix">
+		                          <p>계정 권한</p>
+                                  <input type="text" name="auth" value="0" autocomplete="off" class="form-control placeholder-no-fix">
+		                      
+                              
+                              </div>
 		                      <div class="modal-footer">
 		                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-		                          <button class="btn btn-theme" type="submit">Login</button>
+		                          <button class="btn btn-theme" type="submit">Confirm</button>
 		                      </div>
                               </form>
 		                  </div>
 		              </div>
 		          </div>
 		          <!-- modal -->
-
-
   </body>
 </html>

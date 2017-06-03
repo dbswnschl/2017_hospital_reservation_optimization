@@ -4,15 +4,15 @@ var mysql = require('./mysql');
 console.log("ABCDEFG");
 var connection = mysql.connect();
 var FCM = require('fcm-node');
-var serverKey = "AIzaSyAv8u2gITuRPBipeW9aEQ-K-yTV3zxLNmA"; //인증키
+var serverKey = "AAAABRO0LPk:APA91bETaNZ7lTnXpnX6dJChFXXMCp5nLvDkvrBblyqKNzP-vKWNawRsXTU3ab4wAvA2E7PMAj7UG07tCSVJtHSmCuSaU4TM-lAkaQstzUsPJVufeQ1PsqNUqPBNdXiC29mj3ZFsOURP";
+//var serverKey="AAAAHGN2-WM:APA91bHBAYCPwHiEAjNCA-HPeTFXxDXObw7DAYheQnr_hEFZJBh6b8-TXR_B47w0ygYC99l1EnrUcWj-vpByX9h8h3yBcL4dksSmd7hvHvvMLjwCYCSXCndeWOkIGloyO0W_bKyWb4IK";
+//var serverKey = "AIzaSyAv8u2gITuRPBipeW9aEQ-K-yTV3zxLNmA"; //인증키
 var fem = new FCM(serverKey);
-var reservationManager = require('../public/libs/ReservationManager').ReservationManager;
-
 var message = {
   to: '', //기기 토큰값
   notification: {
-    title: 'this is title',//제목
-    body: 'message to phone' //보낼 메시지
+    title: '테스트로 보내는 알림입니다.',//제목
+    body: '테스트 메시지 입니다.' //보낼 메시지
   },
 };
 /* GET home page. */
@@ -28,7 +28,7 @@ app.get('/get_reservation', function (req, res) {
         reservationtime1.push(row[i].reservationtime);
         status1.push(row[i].status);
         id1.push(row[i].usernumber);
-        name1.push(rows[row[i].usernumber].username);
+        name1.push(rows[row[i].usernumber - 1].username);
       }
       var result = new Array();
       for (var i = 0; i < row.length; i++) {
@@ -73,6 +73,7 @@ app.get('/get_waiting', function (req, res) {
 });
 
 /* POST home page. */
+var msg;
 
 app.post('/add_reservation', function (req, res) {
   var id = req.body.userID;
@@ -80,6 +81,11 @@ app.post('/add_reservation', function (req, res) {
   var day = req.body.bookDay;
   var month = req.body.bookMonth;
   var year = req.body.bookYear;
+  var peoples;
+  if (String(month).length < 2)
+    month = "0" + month;
+  if (String(day).length < 2)
+    day = "0" + day;
   var bookTime = req.body.bookTime;
   var response = { success: true };
   var dt = year + "-" + month + "-" + day + " " + bookTime;
@@ -92,10 +98,33 @@ app.post('/add_reservation', function (req, res) {
             console.log(`INSERT INTO reservation (usernumber,part,reservationtime,status) VALUES('${row[0].id}','${purpose}','${dt}','0')`);
             console.log("[디버그]예약성공");
 
-            reservationManager.addReservation(id, dt);
+            /*
+                        //fcm
+            
+                        msg = {
+                          to: 'cMPRImpPAhw:APA91bG_IzIEr6il4V2xRjIF0YX7QLsjRtDbDqcMgQSyyYz9-Cc-WKWJhQY395Fr6ZlNf8udAYIA39LC-UkSt9FNM6anAz6cX24x1EJakEBMMzyxSnZXpXY0hdzMDaPYlRSrjsT2kSFz', //기기 토큰값
+                          notification: {
+                            title: '예약알림.',//제목
+                            body: '예약이'+peoples+"개 남았습니다." //보낼 메시지
+                          }
+                        };
+                        fem.send(msg, function (err2, response2) {
+                          if (err) {
+                            console.log("Fialed sent, ", err2);
+                            res.send(err2);
+                          } else {
+                            console.log(msg);
+                            console.log("Success sent, res: ", response2);
+                            //res.send({ success: true });
+                          }
+                        });
+                        //fcm
+                        */
 
-            res.json(response);
             console.log("reservation success");
+            // res.json(response);
+
+
           }
 
         });
@@ -140,14 +169,14 @@ app.post('/get_history', function (req, res) {
       var wanttime1 = new Array();
       var purpose1 = new Array();
       var result = new Array();
-      for( var i = 0 ; i < row.length ; ++i){
+      for (var i = 0; i < row.length; ++i) {
         result.push({
-          wanttime:row[i].wanttime,
-          purpose:row[i].part
+          wanttime: row[i].wanttime,
+          purpose: row[i].part
         });
       }
 
-      var response = { response : result } ;	
+      var response = { response: result };
 
       console.log(response);
       res.json(response);
@@ -171,7 +200,7 @@ app.post('/get_account', function (req, res) {
     });
   });
 });
-app.post('/check_reservation',function(req,res){
+app.post('/check_reservation', function (req, res) {
   var userid = req.body.userid;
   var usernumber;
   connection.query(`SELECT id, username FROM accounts WHERE userid='${userid}'`, function (error, rows, fields) {
@@ -192,70 +221,84 @@ app.post('/check_reservation',function(req,res){
       var result = new Array();
       for (var i = 0; i < row.length; i++) {
         result.push({
-          id: id1[i], name: name1[i], reservationtime: reservationtime1[i], status: status1[i], purpose:purpose1[i]
+          id: id1[i], name: name1[i], reservationtime: reservationtime1[i], status: status1[i], purpose: purpose1[i]
         });
       }
-	var response = { response : result };
-	console.log(response);
-    res.json(response);
+      var response = { response: result };
+      console.log(response);
+      res.json(response);
     });
   });
 });
-app.post('/beacon_connect',function(req,res){
+app.post('/beacon_connect', function (req, res) {
   var userid = req.body.userid;
   var uuid = req.body.uuid;
   var tf = false;
-  var id ;
+  var id;
+  var reserved_time;
+  var part;
+  var rowid;
   console.log(userid);
   console.log(uuid);
-  connection.query(`SELECT * FROM accounts WHERE userid='${userid}'`,function(error,rows,fields){
-    if(error){
+  connection.query(`SELECT * FROM accounts WHERE userid='${userid}'`, function (error, rows, fields) {
+    if (error) {
       console.log(error);
       res.send(error);
     }
     id = rows[0].id;
-  connection.query(`SELECT * FROM beacon ;`,function(err,row,field){
-    if(err){
-      console.log(err);
-      res.send(err);
-    }
-//    for(var i in row){
-      for(var i = 0 ; i < row.length ; i++){
-      if(uuid == row[i].UUID){
-        tf = true;
-        console.log(row[i].UUID);
+    connection.query(`SELECT * FROM beacon ;`, function (err, row, field) {
+      if (err) {
+        console.log(err);
+        res.send(err);
       }
-    }
-    if(tf == false){
-      console.log("Not correct UUID!");
-      res.send("Not correct UUID!");
-    }
-    else{
-      console.log(`INSERT INTO waiting (usernumber,status) VALUES('${id}','0')`);
-      connection.query(`INSERT INTO waiting (usernumber,status) VALUES('${id}','0')`, function(err1,row1,field1){
-        if(err1) {
-          console.log(err1);
-          res.send(err1);
+      //    for(var i in row){
+      for (var i = 0; i < row.length; i++) {
+        if (uuid == row[i].UUID) {
+          tf = true;
+          console.log(row[i].UUID);
         }
-        console.log(`DELETE FROM reservation WHERE usernumber='${id}';`);
-  connection.query(`DELETE FROM reservation WHERE usernumber='${id}';`,function(err2,row2,field2){
-    if(err2){
-      console.log(err2);
-      res.send(err2);
-    }
+      }
+      if (tf == false) {
+        console.log("Not correct UUID!");
+        res.send("Not correct UUID!");
+      }
+      else {
+        connection.query(`SELECT * FROM reservation WHERE usernumber='${id}'`, function (err_reservation, rows_reservation, fields_reservation) {
+          if (err_reservation) {
+            console.log("예약 정보를 찾을 수 없음");
+            res.send("예약 정보를 찾을 수 없습니다.");
+          } else {
+            reserved_time = rows_reservation[0].reservationtime;
+            part = rows_reservation[0].part;
+            rowid = rows_reservation[0].id;
+          }
+
+        });
 
 
-    res.send({success:true});
-      });
+        connection.query(`INSERT INTO waiting (usernumber,status,reserved_time,token,part) VALUES('${id}','0','${reserved_time}','${uuid}','${part}')`, function (err1, row1, field1) {
+          if (err1) {
+            console.log(err1);
+            res.send(err1);
+          }
+          connection.query(`DELETE FROM reservation WHERE id='${rowid}';`, function (err2, row2, field2) {
+            if (err2) {
+              console.log(err2);
+              res.send(err2);
+            }
+
+
+            res.send({ success: true });
+          });
+        });
+      }
+    });
   });
-  }
- });
-});
 });
 app.post('/test', function (req, res) {
   var token = req.body.token;
   message.to = token;
-  FCM.send(message, function (err, response) {
+  fem.send(message, function (err, response) {
     if (err) {
       console.log("Fialed sent, ", err);
       res.send(err);
@@ -268,6 +311,123 @@ app.post('/test', function (req, res) {
 
 
 });
+app.get('/gettoken', function (req, res) {
+  var idtoken;
+  fem.auth().currentUser.getToken(true).then(function (idtoken) {
+    res.send(idtoken);
+  }).catch(function (err) {
 
+  });
+});
+
+var msg = {
+  to: 'cMPRImpPAhw:APA91bG_IzIEr6il4V2xRjIF0YX7QLsjRtDbDqcMgQSyyYz9-Cc-WKWJhQY395Fr6ZlNf8udAYIA39LC-UkSt9FNM6anAz6cX24x1EJakEBMMzyxSnZXpXY0hdzMDaPYlRSrjsT2kSFz', //기기 토큰값
+  notification: {
+    title: '예약알림',//제목
+    //body: '예약이' + get_count() + "개 남았습니다." //보낼 메시지
+  }
+};
+app.get('/alert/count', function (req, res) {
+
+  connection.query(`SELECT * FROM reservation`, function (err, row, field) {
+    msg.notification.body = "예약이";
+    msg.notification.body += row.length;
+    msg.notification.body += "개 남았습니다.";
+    fem.send(msg, function (err, response) {
+      if (err) {
+        console.log("Fialed sent, ", err);
+        res.send(err);
+      } else {
+        console.log(msg);
+        console.log("Success sent, res: ", response);
+        res.json({ success: true });
+      }
+    });
+  });
+});
+app.post('/alert/count', function (req, res) {
+  var token = req.body.token;
+  if(token){
+    msg.to = token;
+  }else{
+    msg.to = 'cMPRImpPAhw:APA91bG_IzIEr6il4V2xRjIF0YX7QLsjRtDbDqcMgQSyyYz9-Cc-WKWJhQY395Fr6ZlNf8udAYIA39LC-UkSt9FNM6anAz6cX24x1EJakEBMMzyxSnZXpXY0hdzMDaPYlRSrjsT2kSFz';
+  }
+  connection.query(`SELECT * FROM reservation`, function (err, row, field) {
+    msg.notification.body = "예약이";
+    msg.notification.body += row.length;
+    msg.notification.body += "개 남았습니다.";
+    fem.send(msg, function (err, response) {
+      if (err) {
+        console.log("Fialed sent, ", err);
+        res.send(err);
+      } else {
+        console.log(msg);
+        console.log("Success sent, res: ", response);
+        res.json({ success: true });
+      }
+    });
+  });
+});
+
+
+app.get('/alert', function (req, res) {
+  var msg = {
+    to: 'cMPRImpPAhw:APA91bG_IzIEr6il4V2xRjIF0YX7QLsjRtDbDqcMgQSyyYz9-Cc-WKWJhQY395Fr6ZlNf8udAYIA39LC-UkSt9FNM6anAz6cX24x1EJakEBMMzyxSnZXpXY0hdzMDaPYlRSrjsT2kSFz', //기기 토큰값
+    notification: {
+      title: '테스트로 보내는 알림입니다.',//제목
+      body: '테스트 메시지 입니다.' //보낼 메시지
+    }
+  };
+
+  fem.send(msg, function (err, response) {
+    if (err) {
+      console.log("Fialed sent, ", err);
+      res.send(err);
+    } else {
+      console.log("Success sent, res: ", response);
+      res.send({ success: true });
+    }
+  });
+});
+var get_count = function () {
+  console.log(row.length + "명");
+  return String(row.length);
+
+
+}
+app.post('/check_waiting_count',function(req,res){
+  var userid = req.body.userid;
+  console.log("userid="+userid);
+  var usernumber;
+  var count;
+  var token;
+  connection.query(`SELECT * FROM accounts WHERE userid=${'userid'}`,function(err,row,field){
+    usernumber = row[0].id;
+    console.log("usernumber="+usernumber);
+  });
+  connection.query(`SELECT * FROM waiting WHERE status=0`,function(err,row,field){
+    for(var i = 0 ; i < row.length ; i ++){
+      if(row[i].usernumber == usernumber){
+        count=i+1;
+        msg.to=row[i].token;
+        break;
+      }
+    }
+    console.log("usernumber="+usernumber);
+    msg.notification.body = "대기번호";
+    msg.notification.body += count;
+    msg.notification.body += "번 입니다!";
+    fem.send(msg, function (err, response) {
+      if (err) {
+        console.log("Fialed sent, ", err);
+        res.send(err);
+      } else {
+        console.log(msg);
+        console.log("Success sent, res: ", response);
+        res.json({ success: true });
+      }
+    });
+  });
+});
 
 module.exports = app;

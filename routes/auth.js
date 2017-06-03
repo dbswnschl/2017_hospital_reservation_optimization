@@ -91,7 +91,9 @@ app.post('/register', function (req, res) {
     } else {
 
       var birth = req.body.birth;
-      connection.query(`INSERT INTO accounts (userid,userpw,username,birth,email) VALUES ('${req.body.userid}','${req.body.userpw}','${req.body.username}','${birth}','${req.body.email}');`, function (err, rows, fields) {
+      var phone = req.body.phone;
+      console.log(phone);
+      connection.query(`INSERT INTO accounts (userid,userpw,username,birth,email,phone) VALUES ('${req.body.userid}','${req.body.userpw}','${req.body.username}','${birth}','${req.body.email}','${phone}');`, function (err, rows, fields) {
         if (err)
           res.send(err);
 

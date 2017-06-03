@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Dashboard">
+    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+
+    <title>회원가입 페이지</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <!--external css-->
+    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+        
+    <!-- Custom styles for this template -->
+    <link href="assets/css/style.css" rel="stylesheet">
+  </head>
+  <body>
+  
+  <section id="container" >
+    <h1>회원가입</h1>
+    <form action='/pc/register' method='post' style='margin-left:10px;'>
+      <p>이름</p>
+      <input type='text' name='username' placeholder='Enter your name'><br/><br/>
+      <p>아이디</p>
+      <input type='text' name='userid' placeholder='Enter your ID'><br/><br/>
+      <p>비밀번호</p>
+      <input type='password' name='userpw' placeholder='Enter your Password'><br/><br/>
+      <p>생년월일</p>
+      <input type='date' name='birth'>
+      <p>이메일</p>
+      <input type='email' name='email' placeholder='Enter your E-mail'><br/><br/>
+      <p>전화번호</p>
+      <input type='phone' name='phone' placeholder='Enter your Phone'><br/><br/>
+		  <button class="btn btn-default" type="reset">모두 비우기</button>
+      <button class="btn btn-theme" type="submit">계속 가입하기</button>
+    </form>
+  </section>
+
+  </body>
+</html>

@@ -37,7 +37,7 @@
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
             <!--logo start-->
-            <a href="index.html" class="logo"><b>OO 병원</b></a>
+            <a href="/pc/main" class="logo"><b>OO 병원</b></a>
             <!--logo end-->
             <div class="nav notify-row" id="top_menu">
                 <!--  notification start -->
@@ -181,7 +181,8 @@
             </div>
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="login.html">Logout</a></li>
+                    <li><a class="login" data-toggle="modal" href="#myModal">Login</a></li>
+                    <!--<li><a class="logout" href="login.html">Logout</a></li>-->
             	</ul>
             </div>
         </header>
@@ -237,8 +238,8 @@
                           <span>예약 및 대기 인원 조회</span>
                       </a>
                       <ul class="sub">
-                          <li ><a  href="/pc/test">실시간 대기 환자 목록</a></li>
-                          <li><a  href="/pc/test2">현재 예약 환자 목록</a></li>
+                          <li ><a  href="/pc/table_waiting">실시간 대기 환자 목록</a></li>
+                          <li><a  href="/pc/table_reservation">현재 예약 환자 목록</a></li>
                       </ul>
                   </li>
                   <li class="sub-menu">
@@ -261,16 +262,16 @@
                       </ul>
                   </li>
                   <li class="sub-menu">
-                      <a href="javascript:;" >
+                      <a data-toggle="modal" href="#myModal" >
                           <i class="fa fa-cogs"></i>
-                          <span>관리자용</span>
-                      </a>
+                          <span >관리자용</span>
+                      </a><!--
                       <ul class="sub">
-                          <li><a  href="calendar.html">환자 정보 관리</a></li>
+                          <li><a  data-toggle="modal" href="#myModal">환자 정보 관리</a></li>
                           <li><a  href="gallery.html">예약 환자 관리</a></li>
                           <li><a  href="gallery.html">대기 환자 관리</a></li>
                           <li><a  href="todo_list.html">문의 답변 하기</a></li>
-                      </ul>
+                      </ul> -->
                   </li>
               </ul>
               <!-- sidebar menu end-->
@@ -310,7 +311,7 @@
       <footer class="site-footer">
           <div class="text-center">
               2017 - Hospital_Reservation_Service
-              <a href="/pc/test#" class="go-top">
+              <a href="/pc/mauin#" class="go-top">
                   <i class="fa fa-angle-up"></i>
               </a>
           </div>
@@ -339,6 +340,31 @@
       });
 
   </script>
+  <!-- Modal -->
+		          <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
+		              <div class="modal-dialog">
+		                  <div class="modal-content">
+		                      <div class="modal-header">
+		                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                          <h4 class="modal-title">병원 관계자 이십니까?</h4>
+		                      </div>
+                              <form action="/pc/login_admin" method="post">
+		                      <div class="modal-body">
+		                          <p>관리자용 아이디를 입력해 주세요.</p>
+		                          <input type="text" name="userid" placeholder="Input your ID" autocomplete="off" class="form-control placeholder-no-fix"><br/>
+                                  <p>관리자용 비밀번호를 입력해 주세요.</p>
+                                  <input type="password" name="userpw" placeholder="Input your Password" autocomplete="off" class="form-control placeholder-no-fix">
+		                      </div>
+		                      <div class="modal-footer">
+		                          <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+		                          <button class="btn btn-theme" type="submit">Login</button>
+		                      </div>
+                              </form>
+		                  </div>
+		              </div>
+		          </div>
+		          <!-- modal -->
+
 
   </body>
 </html>
