@@ -25,21 +25,21 @@ var Script = function () {
 
     ];
     var lineChartData = {
-        labels : ["","","","","","",""],
+        labels : ["0~10세","10대","20대","30대","40대","50대","60대이상"],
         datasets : [
             {
                 fillColor : "rgba(220,220,220,0.5)",
                 strokeColor : "rgba(220,220,220,1)",
                 pointColor : "rgba(220,220,220,1)",
                 pointStrokeColor : "#fff",
-                data : [65,59,90,81,56,55,40]
+                data : [3,9,11,4,10,5,12]
             },
             {
                 fillColor : "rgba(151,187,205,0.5)",
                 strokeColor : "rgba(151,187,205,1)",
                 pointColor : "rgba(151,187,205,1)",
                 pointStrokeColor : "#fff",
-                data : [28,48,40,19,96,27,100]
+                data : [5,8,10,3,13,4,15]
             }
         ]
 
@@ -60,17 +60,17 @@ var Script = function () {
 
     ];
     var barChartData = {
-        labels : ["January","February","March","April","May","June","July"],
+        labels : ["월요일","화요일","수요일","목요일","금요일"],
         datasets : [
             {
                 fillColor : "rgba(220,220,220,0.5)",
                 strokeColor : "rgba(220,220,220,1)",
-                data : [65,59,90,81,56,55,40]
+                data : [40,30,20,15,35]
             },
             {
                 fillColor : "rgba(151,187,205,0.5)",
                 strokeColor : "rgba(151,187,205,1)",
-                data : [28,48,40,19,96,27,100]
+                data : [20,15,30,15,25]
             }
         ]
 
@@ -121,12 +121,50 @@ var Script = function () {
         ]
 
     };
+        var barChartData2 = {
+        labels : ["9~11","11~13","13~15","15~17","17~19"],
+        datasets : [
+            {
+                fillColor : "rgba(220,220,220,0.5)",
+                strokeColor : "rgba(220,220,220,1)",
+                data : [40,30,15,20,35]
+            },
+            {
+                fillColor : "rgba(151,187,205,0.5)",
+                strokeColor : "rgba(151,187,205,1)",
+                data : [20,15,40,20,25]
+            }
+        ]
+
+    };
+        var lineChartData2 = {
+        labels : ["0~10세","10대","20대","30대","40대","50대","60대이상"],
+        datasets : [
+            {
+                fillColor : "rgba(220,220,220,0.5)",
+                strokeColor : "rgba(220,220,220,1)",
+                pointColor : "rgba(220,220,220,1)",
+                pointStrokeColor : "#fff",
+                data : [7,9,7,4,8,5,16]
+            },
+            {
+                fillColor : "rgba(151,187,205,0.5)",
+                strokeColor : "rgba(151,187,205,1)",
+                pointColor : "rgba(151,187,205,1)",
+                pointStrokeColor : "#fff",
+                data : [5,8,8,3,13,4,18]
+            }
+        ]
+
+    };
     new Chart(document.getElementById("doughnut").getContext("2d")).Doughnut(doughnutData);
-    new Chart(document.getElementById("line").getContext("2d")).Line(lineChartData);
+    new Chart(document.getElementById("pie").getContext("2d")).Pie(pieData);
     new Chart(document.getElementById("radar").getContext("2d")).Radar(radarChartData);
     new Chart(document.getElementById("polarArea").getContext("2d")).PolarArea(chartData);
     new Chart(document.getElementById("bar").getContext("2d")).Bar(barChartData);
-    new Chart(document.getElementById("pie").getContext("2d")).Pie(pieData);
+    new Chart(document.getElementById("line").getContext("2d")).Line(lineChartData);
+    new Chart(document.getElementById("bar2").getContext("2d")).Bar(barChartData2);
+    new Chart(document.getElementById("line2").getContext("2d")).Line(lineChartData2);
 
 
 }();

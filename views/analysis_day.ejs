@@ -17,6 +17,7 @@
     <!-- Custom styles for this template -->
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
+    
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -39,7 +40,7 @@
             <!--logo start-->
             <a href="/pc/main" class="logo"><b>OO 병원</b></a>
             <!--logo end-->
-            <div class="nav notify-row" id="top_menu">
+             <div class="nav notify-row" id="top_menu">
                 <!--  notification start -->
                 <ul class="nav top-menu">
                     <!-- settings start -->
@@ -112,7 +113,7 @@
                     </li>
                     <!-- settings end -->
                     <!-- inbox dropdown start-->
-                    <li id="header_inbox_bar" class="dropdown">
+                   <li id="header_inbox_bar" class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#">
                             <i class="fa fa-envelope-o"></i>
                             <span class="badge bg-theme">5</span>
@@ -191,7 +192,7 @@
       MAIN SIDEBAR MENU
       *********************************************************************************************************************************************************** -->
       <!--sidebar start-->
-      <aside>
+     <aside>
           <div id="sidebar"  class="nav-collapse ">
               <!-- sidebar menu start-->
               <ul class="sidebar-menu" id="nav-accordion">
@@ -232,12 +233,12 @@
                   </li> -->
                 
                   <li class="sub-menu">
-                      <a class="active" href="javascript:;" >
+                      <a href="javascript:;" >
                           <i class="fa fa-th"></i>
                           <span>예약 및 대기 인원 조회</span>
                       </a>
                       <ul class="sub">
-                          <li class="active"><a  href="/pc/table_waiting">실시간 대기 환자 목록</a></li>
+                          <li><a  href="/pc/table_waiting">실시간 대기 환자 목록</a></li>
                           <li><a  href="/pc/table_reservation">현재 예약 환자 목록</a></li>
                       </ul>
                   </li>
@@ -251,12 +252,12 @@
                       </ul>
                   </li>
                   <li class="sub-menu">
-                      <a href="javascript:;" >
+                      <a class="active" href="javascript:;" >
                           <i class=" fa fa-bar-chart-o"></i>
                           <span>분석</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="/pc/analysis_day">요일별 환자 분포</a></li>
+                          <li class="active"><a  href="/pc/analysis_day">요일별 환자 분포</a></li>
                           <li><a  href="/pc/analysis_time">시간대별 환자 분포</a></li>
                       </ul>
                   </li>
@@ -284,47 +285,68 @@
       <!--main content start-->
       <section id="main-content">
           <section class="wrapper">
-          	<h3><i class="fa fa-angle-right"></i>환자 목록</h3>
-				<div class="row">
-				
-	                  <div class="col-md-12">
-	                  	  <div class="content-panel">
-	                  	  	  <h4><i class="fa fa-angle-right"></i> 실시간 대기중인 환자 목록</h4>
-	                  	  	  <hr>
-		                      <table class="table">
-		                          <thead>
-		                          <tr>
-		                              <th>#</th>
-		                              <th>이름</th>
-		                              <th><i class="fa fa-bookmark"></i>등록 시간</th>
-		                              <th><i class=" fa fa-edit"></i>증상</th>
-                                      <th>상태</th>
-		                          </tr>
-		                          </thead>
-		                          <tbody>
-                                      <%
-                                      for(var i = 0 ; i < lists.length ; i ++){
-                                          
-                                      
-                                      %>
-
-		                          <tr>
-		                                <td> <%= i+1%></td>
-                                        <td> <%= acc[lists[i].usernumber-1].username%></td>
-                                        <td> <%= timearr[i][3]%>-<%= timearr[i][1]%>-<%= timearr[i][2]%> <%= timearr[i][4]%></td>
-                                        <td> <%= lists[i].part%></td>
-                                        <td> <% if(lists[i].status == '0'){%><span class="label label-info label-mini">대기중</span><%}else if(lists[i].status =='1') {%><span class="label label-success label-mini">진료중</span><%} else {%><span class="label label-warning label-mini">진료종료</span> <% } %></td>
-		                          </tr>
-                                  <%} %>
-		                          
-		                          </tbody>
-		                      </table>
-	                  	  </div><! --/content-panel -->
-	                  </div><!-- /col-md-12 -->
-                  
-              </div><!-- /row -->
-
-		</section><! --/wrapper -->
+          <h3><i class="fa fa-angle-right"></i> 요일별 환자 분포</h3>
+              <!-- page start-->
+              <div class="tab-pane" id="chartjs">
+                  <div class="row mt" style="display:none;">
+                      <div class="col-lg-6">
+                          <div class="content-panel">
+							  <h4><i class="fa fa-angle-right"></i> Doughnut</h4>
+                              <div class="panel-body text-center">
+                                  <canvas id="doughnut" height="300" width="400"></canvas>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-lg-6">
+                          <div class="content-panel">
+							  <h4><i class="fa fa-angle-right"></i> Pie</h4>
+                              <div class="panel-body text-center">
+                                  <canvas id="pie" height="300" width="400"></canvas>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row mt" style="display:none;">
+                      <div class="col-lg-6">
+                          <div class="content-panel">
+							  <h4><i class="fa fa-angle-right"></i> Radar</h4>
+                              <div class="panel-body text-center">
+                                  <canvas id="radar" height="300" width="400"></canvas>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-lg-6">
+                          <div class="content-panel">
+							  <h4><i class="fa fa-angle-right"></i> Polar Area</h4>
+                              <div class="panel-body text-center">
+                                  <canvas id="polarArea" height="300" width="400"></canvas>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row mt">
+                      <div class="col-lg-6">
+                          <div class="content-panel">
+							  <h4><i class="fa fa-angle-right"></i> 요일별 환자 분포</h4>
+                              <div class="panel-body text-center">
+                                  <canvas id="bar" height="300" width="400"></canvas>
+                              </div>
+                  <p> &nbsp;회색 음영은 지난주 자료입니다.</p>
+                          </div>
+                      </div>
+                      <div class="col-lg-6">
+                          <div class="content-panel">
+							  <h4><i class="fa fa-angle-right"></i> 주간 평균 환자 연령대 분포</h4>
+                              <div class="panel-body text-center">
+                                  <canvas id="line" height="300" width="400"></canvas>
+                              </div>
+                  <p> &nbsp;회색 음영은 지난주 자료입니다.</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <!-- page end-->
+          </section>          
       </section><!-- /MAIN CONTENT -->
 
       <!--main content end-->
@@ -332,7 +354,7 @@
       <footer class="site-footer">
           <div class="text-center">
               2017 - Hospital_Reservation_Service
-              <a href="/pc/table_waiting#" class="go-top">
+              <a href="/pc/analysis_day#" class="go-top">
                   <i class="fa fa-angle-up"></i>
               </a>
           </div>
@@ -352,6 +374,8 @@
     <script src="assets/js/common-scripts.js"></script>
 
     <!--script for this page-->
+    <script src="assets/js/chart-master/Chart.js"></script>
+    <script src="assets/js/chartjs-conf.js"></script>
     
   <script>
       //custom select box

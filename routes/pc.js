@@ -284,6 +284,12 @@ app.get('/table_reservation',function(req,res){
 app.get('/login',function(req,res){
   res.render('login');
 });
+app.get('/analysis_day',function(req,res){
+  res.render('analysis_day');
+});
+app.get('/analysis_time',function(req,res){
+  res.render('analysis_time');
+});
 app.post('/login_admin',function(req,res){
   var userid= req.body.userid;
   var userpw= req.body.userpw;

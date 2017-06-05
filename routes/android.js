@@ -52,17 +52,17 @@ app.get('/get_waiting', function (req, res) {
       var wanttime1 = new Array();
       var status1 = new Array();
       for (var i = 0; i < row.length; i++) {
-        wanttime1.push(row[i].wanttime);
+        wanttime1.push(String(row[i].wanttime).split(' ')[4]);
         status1.push(row[i].status);
         id1.push(row[i].usernumber);
-        name1.push(rows[row[i].usernumber].username);
+        name1.push(rows[row[i].usernumber-1].username);
       }
       console.log(id1);
       console.log(name1);
       var result = new Array();
       for (var i = 0; i < row.length; i++) {
         result.push({
-          id: id1[i], name: name1[i], wanttime: wanttime1[i], status: status1[i]
+        name: name1[i], wanttime: wanttime1[i],
         });
       }
       var response = { response: result };
@@ -100,7 +100,7 @@ app.post('/add_reservation', function (req, res) {
 
             /*
                         //fcm
-            
+
                         msg = {
                           to: 'cMPRImpPAhw:APA91bG_IzIEr6il4V2xRjIF0YX7QLsjRtDbDqcMgQSyyYz9-Cc-WKWJhQY395Fr6ZlNf8udAYIA39LC-UkSt9FNM6anAz6cX24x1EJakEBMMzyxSnZXpXY0hdzMDaPYlRSrjsT2kSFz', //기기 토큰값
                           notification: {
@@ -122,7 +122,7 @@ app.post('/add_reservation', function (req, res) {
                         */
 
             console.log("reservation success");
-            // res.json(response);
+             res.json(response);
 
 
           }
@@ -160,7 +160,7 @@ app.post('/get_history', function (req, res) {
       res.send(error);
     }
     var id = rows[0].id;
-    connection.query(`SELECT * FROM waiting WHERE usernumber='${id}' AND status='3'`, function (err, row, field) {
+    connection.query(`SELECT * FROM waiting WHERE usernumber='${id}' AND status='2'`, function (err, row, field) {
       if (err) {
         console.log("[ERROR02] " + err);
         res.send(err);
@@ -233,11 +233,13 @@ app.post('/check_reservation', function (req, res) {
 app.post('/beacon_connect', function (req, res) {
   var userid = req.body.userid;
   var uuid = req.body.uuid;
+  var token = req.body.userToken;
   var tf = false;
   var id;
   var reserved_time;
   var part;
   var rowid;
+  var reservation_id;
   console.log(userid);
   console.log(uuid);
   connection.query(`SELECT * FROM accounts WHERE userid='${userid}'`, function (error, rows, fields) {
@@ -268,29 +270,40 @@ app.post('/beacon_connect', function (req, res) {
             console.log("예약 정보를 찾을 수 없음");
             res.send("예약 정보를 찾을 수 없습니다.");
           } else {
+          console.log("[디버깅모드]");
+            console.log("usernumber="+id);
+          console.log(rows_reservation);
+            if(rows_reservation.length > 0){
             reserved_time = rows_reservation[0].reservationtime;
             part = rows_reservation[0].part;
-            rowid = rows_reservation[0].id;
-          }
-
-        });
+            rowid = rows_reservation[0].usernumber;
+            reservation_id = rows_reservation[0].id;
 
 
-        connection.query(`INSERT INTO waiting (usernumber,status,reserved_time,token,part) VALUES('${id}','0','${reserved_time}','${uuid}','${part}')`, function (err1, row1, field1) {
+
+        connection.query(`INSERT INTO waiting (usernumber,status,reserved_time,token,part) VALUES('${rowid}','0','${reserved_time}','${token}','${part}')`, function (err1, row1, field1) {
           if (err1) {
             console.log(err1);
             res.send(err1);
           }
-          connection.query(`DELETE FROM reservation WHERE id='${rowid}';`, function (err2, row2, field2) {
+          connection.query(`DELETE FROM reservation WHERE id='${reservation_id}';`, function (err2, row2, field2) {
             if (err2) {
               console.log(err2);
               res.send(err2);
             }
 
-
-            res.send({ success: true });
+           var response = { success : true};
+            res.json(response);
           });
         });
+
+      }
+      }
+
+                });
+
+
+
       }
     });
   });
@@ -369,10 +382,31 @@ app.post('/alert/count', function (req, res) {
   });
 });
 
+app.post('/alert/success', function (req, res) {
+  var token = req.body.token
+  var msg = {
+    to: token, //기기 토큰값
+    notification: {
+      title: '동네병원',//제목
+      body: '진료 접수가 완료되었습니다.' //보낼 메시지
+    }
+  };
+
+  fem.send(msg, function (err, response) {
+    if (err) {
+      console.log("Fialed sent, ", err);
+      res.send(err);
+    } else {
+      console.log("Success sent, res: ", response);
+      res.send({ success: true });
+    }
+  });
+});
 
 app.get('/alert', function (req, res) {
   var msg = {
-    to: 'cMPRImpPAhw:APA91bG_IzIEr6il4V2xRjIF0YX7QLsjRtDbDqcMgQSyyYz9-Cc-WKWJhQY395Fr6ZlNf8udAYIA39LC-UkSt9FNM6anAz6cX24x1EJakEBMMzyxSnZXpXY0hdzMDaPYlRSrjsT2kSFz', //기기 토큰값
+    //to: 'cMPRImpPAhw:APA91bG_IzIEr6il4V2xRjIF0YX7QLsjRtDbDqcMgQSyyYz9-Cc-WKWJhQY395Fr6ZlNf8udAYIA39LC-UkSt9FNM6anAz6cX24x1EJakEBMMzyxSnZXpXY0hdzMDaPYlRSrjsT2kSFz', //기기 토큰값
+    to:'c_FWdMCzUIQ:APA91bF_uKlMLCTbE8m7ZNef0KqLmJHQY07dZ0hYYawPc4nDLsxOAQXibU3snJAiiAE7cjjAJxu46om4hc_1uVsnKTtqvAztAZpRGRPA7QPrQ46jUWJbytoAaoi54lKkwOnz7hB-DZDu',
     notification: {
       title: '테스트로 보내는 알림입니다.',//제목
       body: '테스트 메시지 입니다.' //보낼 메시지
