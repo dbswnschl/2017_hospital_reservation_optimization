@@ -7,6 +7,7 @@ var FCM = require('fcm-node');
 var serverKey = "AAAABRO0LPk:APA91bETaNZ7lTnXpnX6dJChFXXMCp5nLvDkvrBblyqKNzP-vKWNawRsXTU3ab4wAvA2E7PMAj7UG07tCSVJtHSmCuSaU4TM-lAkaQstzUsPJVufeQ1PsqNUqPBNdXiC29mj3ZFsOURP";
 //var serverKey="AAAAHGN2-WM:APA91bHBAYCPwHiEAjNCA-HPeTFXxDXObw7DAYheQnr_hEFZJBh6b8-TXR_B47w0ygYC99l1EnrUcWj-vpByX9h8h3yBcL4dksSmd7hvHvvMLjwCYCSXCndeWOkIGloyO0W_bKyWb4IK";
 //var serverKey = "AIzaSyAv8u2gITuRPBipeW9aEQ-K-yTV3zxLNmA"; //인증키
+var reservationManager = require('../public/libs/ReservationManager').ReservationManager;
 var fem = new FCM(serverKey);
 var message = {
   to: '', //기기 토큰값
@@ -122,6 +123,7 @@ app.post('/add_reservation', function (req, res) {
                         */
 
             console.log("reservation success");
+            reservationManager.addReservation(row[0].id, dt);
              res.json(response);
 
 

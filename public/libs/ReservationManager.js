@@ -1,5 +1,6 @@
 /**
  * Created by awesometic on 17. 5. 31.
+ * Last updated: 20170607
  */
 var ReservationManager = ReservationManager || (function() {
 
@@ -96,16 +97,16 @@ var ReservationManager = ReservationManager || (function() {
             });
         };
 
-        var findFromTable = function(userid, reservationtime, callback) {
+        var findFromTable = function(usernumber, reservationtime, callback) {
             pool.getConnection(function(err, connection) {
                 if (err)
                     console.error(err);
-                connection.query('SELECT id FROM reservation WHERE userid=? AND reservationtime=?', [userid, reservationtime], function (err, rows) {
+                connection.query('SELECT id FROM reservation WHERE usernumber=? AND reservationtime=?', [usernumber, reservationtime], function (err, rows) {
                     connection.release();
 
                     if (err)
                         console.error(err);
-                    if (rows.length > 0)
+                    if (rows.length > 1)
                         console.error("ReservationManager: reservation we are looking for is not unique");
 
                     if (typeof callback === "function") {
@@ -120,13 +121,11 @@ var ReservationManager = ReservationManager || (function() {
         };
 
         var getExpiredDatetimeFromTable = function(rawReservedTimeString) {
+            // reservationtime format: "YYYY-MM-DD HH:mm ~ HH:mm"
             var spaceSplit = String(rawReservedTimeString).split(' ');
 
             var reservedDate = spaceSplit[0];
-            var hyphenSplit = String(reservedDate).split('-');
-            reservedDate = hyphenSplit[2] + '-' + hyphenSplit[1] + '-' + hyphenSplit[0];
-
-            var reservedDatetime = new Date(reservedDate + " " + spaceSplit[1] + ':00');
+            var reservedDatetime = new Date(reservedDate + " " + spaceSplit[1] + ':00'); // YYYY-MM-DD HH:mm:00
 
             return moment(reservedDatetime).tz(timezone).add(expiredHoldingMin, 'm').format("YYYY-MM-DD HH:mm:ss");
         };
@@ -141,7 +140,7 @@ var ReservationManager = ReservationManager || (function() {
                     if (err)
                         console.error(err);
 
-                    console.log("ReservationManager: remove expired reservation: " + id);
+                    console.log("ReservationManager: remove reservation: " + id);
                 });
             });
         };
@@ -149,7 +148,7 @@ var ReservationManager = ReservationManager || (function() {
         var addToDictionary = function(id, datetime) {
             reservationDic[datetime] = id;
 
-            console.log("ReservationManager: add reservation: " + id + " / " + datetime);
+            console.log("ReservationManager: add reservation " + id + ", expired at " + datetime);
         };
 
         var startCron = function() {
@@ -196,8 +195,8 @@ var ReservationManager = ReservationManager || (function() {
             stopObserver: function() {
                 stopCron();
             },
-            addReservation: function(userid, reservationtime) {
-                findFromTable(userid, reservationtime, function(id) {
+            addReservation: function(usernumber, reservationtime) {
+                findFromTable(usernumber, reservationtime, function(id) {
                     var expiredDatetime = getExpiredDatetimeFromTable(reservationtime);
 
                     addToDictionary(id, expiredDatetime);
