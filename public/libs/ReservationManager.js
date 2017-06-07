@@ -200,7 +200,7 @@ var ReservationManager = ReservationManager || (function() {
                 findFromTable(usernumber, reservationtime, function(id) {
                     var expiredDatetime = getExpiredDatetimeFromTable(reservationtime);
 
-                    if (expiredDatetime.isValid()) {
+                    if (expiredDatetime.isValid) {
                         addToDictionary(id, expiredDatetime);
                     } else {
                         console.log(getCurrentDatetime() + " ReservationManager: failed to add " + id + ", expired at " + expiredDatetime);
