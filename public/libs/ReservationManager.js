@@ -140,7 +140,7 @@ var ReservationManager = ReservationManager || (function() {
                     if (err)
                         console.error(err);
 
-                    console.log("ReservationManager: remove expired reservation " + id);
+                    console.log(getCurrentDatetime() + " ReservationManager: remove expired reservation " + id);
                 });
             });
         };
@@ -148,7 +148,7 @@ var ReservationManager = ReservationManager || (function() {
         var addToDictionary = function(id, datetime) {
             reservationDic[datetime] = id;
 
-            console.log("ReservationManager: add reservation " + id + ", expired at " + datetime);
+            console.log(getCurrentDatetime() + " ReservationManager: add reservation " + id + ", expired at " + datetime);
         };
 
         var startCron = function() {
@@ -161,14 +161,14 @@ var ReservationManager = ReservationManager || (function() {
                 }
             });
 
-            console.log("ReservationManager: cron service start");
+            console.log(getCurrentDatetime() + " ReservationManager: cron service start");
         };
 
         var stopCron = function() {
             reservationDic = null;
             scheduleCron.cancel();
 
-            console.log("ReservationManager: cron service stop");
+            console.log(getCurrentDatetime() + " ReservationManager: cron service stop");
         };
 
         return {
@@ -176,7 +176,7 @@ var ReservationManager = ReservationManager || (function() {
                 initDatabase();
 
                 startDatetime = getCurrentDatetime();
-                console.log("ReservationManager: started at " + startDatetime);
+                console.log(getCurrentDatetime() + " ReservationManager: started at " + startDatetime);
 
                 getExpired(function(reservations) {
                     for (var i = 0; i < reservations.length; i++) {
