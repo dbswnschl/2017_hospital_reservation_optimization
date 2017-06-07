@@ -108,9 +108,10 @@ var ReservationManager = ReservationManager || (function() {
                         console.error(err);
                     if (rows.length > 1)
                         console.error("ReservationManager: reservation we are looking for is not unique");
-
-                    if (typeof callback === "function") {
-                        callback(rows[0].id);
+                    else {
+                        if (typeof callback === "function") {
+                            callback(rows[0].id);
+                        }
                     }
                 })
             });
