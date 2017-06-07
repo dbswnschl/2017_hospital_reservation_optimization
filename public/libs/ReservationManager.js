@@ -140,7 +140,7 @@ var ReservationManager = ReservationManager || (function() {
                     if (err)
                         console.error(err);
 
-                    console.log("ReservationManager: remove reservation: " + id);
+                    console.log("ReservationManager: remove expired reservation " + id);
                 });
             });
         };
