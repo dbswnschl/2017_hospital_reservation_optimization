@@ -106,9 +106,11 @@ var ReservationManager = ReservationManager || (function() {
 
                     if (err)
                         console.error(err);
-                    if (rows.length > 1)
-                        console.error("ReservationManager: reservation we are looking for is not unique");
-                    else {
+                    if (rows.length == 0) {
+                        console.error(getCurrentDatetime() + " ReservationManager: reservation we are looking for is not existed");
+                    } else if (rows.length > 1) {
+                        console.error(getCurrentDatetime() + " ReservationManager: reservation we are looking for is not unique");
+                    } else {
                         if (typeof callback === "function") {
                             callback(rows[0].id);
                         }
@@ -147,9 +149,13 @@ var ReservationManager = ReservationManager || (function() {
         };
 
         var addToDictionary = function(id, datetime) {
-            reservationDic[datetime] = id;
+            if (moment(datetime, "YYYY-MM-DD HH:mm:ss", true).isValid()) {
+                reservationDic[datetime] = id;
 
-            console.log(getCurrentDatetime() + " ReservationManager: add reservation " + id + ", expired at " + datetime);
+                console.log(getCurrentDatetime() + " ReservationManager: add reservation " + id + ", expired at " + datetime);
+            } else {
+                console.log(getCurrentDatetime() + " ReservationManager: failed to add " + id + ", expired at " + datetime);
+            }
         };
 
         var startCron = function() {
@@ -200,11 +206,7 @@ var ReservationManager = ReservationManager || (function() {
                 findFromTable(usernumber, reservationtime, function(id) {
                     var expiredDatetime = getExpiredDatetimeFromTable(reservationtime);
 
-                    if (expiredDatetime.isValid) {
-                        addToDictionary(id, expiredDatetime);
-                    } else {
-                        console.log(getCurrentDatetime() + " ReservationManager: failed to add " + id + ", expired at " + expiredDatetime);
-                    }
+                    addToDictionary(id, expiredDatetime);
                 });
             },
             getObserverStartDatetime: function() {
