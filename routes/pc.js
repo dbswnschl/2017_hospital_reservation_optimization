@@ -216,7 +216,16 @@ app.post('/add_reservation',function(req,res){
     }
   });
 });
+function leadingZeros(n, digits) {
+          var zero = '';
+          n = n.toString();
 
+          if (n.length < digits) {
+            for (i = 0; i < digits - n.length; i++)
+              zero += '0';
+          }
+          return zero + n;
+}   
 app.get('/table_waiting',function(req,res){
   var arr = new Array();
   var pages = req.params.pages;
@@ -233,49 +242,68 @@ app.get('/table_waiting',function(req,res){
           res.send(err);
         }
         var accounts = rows;
+        
         for (var i = 0; i < people.length; i++) {
-          arr[i] = (people[i].wanttime + "").split(' ');
-          switch (arr[i][1]) {
-            case "January":
-              arr[i][1] = "01";
-              break;
-            case "February":
-              arr[i][1] = "02";
-              break;
-            case "March":
-              arr[i][1] = "03";
-              break;
-            case "Apr":
-              arr[i][1] = "04";
-              break;
-            case "May":
-              arr[i][1] = "05";
-              break;
-            case "June":
-              arr[i][1] = "06";
-              break;
-            case "July":
-              arr[i][1] = "07";
-              break;
-            case "August":
-              arr[i][1] = "08";
-              break;
-            case "September":
-              arr[i][1] = "09";
-              break;
-            case "October":
-              arr[i][1] = "10";
-              break;
-            case "November":
-              arr[i][1] = "11";
-              break;
-            case "December":
-              arr[i][1] = "12";
-              break;
-          }
+            arr[i] = new Array();
+            arr[i][0] = leadingZeros(people[i].wanttime.getHours(),2);
+            arr[i][1] = leadingZeros(people[i].wanttime.getMinutes(),2);
+            arr[i][2] = leadingZeros(people[i].wanttime.getSeconds(),2);
         }
-        res.render('table_waiting', { lists: people, num: num, acc: accounts,timearr: arr,page: pages });
 
+connection.query(`SELECT wanttime, (clinic_end-clinic_start)/60 as val FROM waiting WHERE clinic_start IS NOT NULL AND clinic_end IS NOT NULL`,function(err2,row2,field2){
+        var date_split = function(){
+            this.year = 0;
+            this.month = 0;
+            this.day = 0;
+            this.get_today = function(){
+                console.log(`${this.year}-${this.month}-${this.day}`);
+                var date = new Date(`${this.year}-${this.month}-${this.day}`).getDay();
+                return date;
+            };
+
+            this.get_week = function(){
+                var date = new Date(`${this.year}-${this.month}-${this.day}`).getDate();
+                return date;
+            };
+        };
+        var sum = [0,0,0,0,0,0,0];
+        var cnt   = [0,0,0,0,0,0,0];
+        var avg =      [5,5,5,5,5,5,5];
+        var today_avg = 0;
+        var week_count = [0,0,0,0,0,0,0];
+        var temp = [0,0,0,0,0,0,0];
+        for(var i in row2){
+            if(row2[i].val > 20 || row2[i].val < 0){
+                continue;
+            } // if 20min over
+            else{
+                var ds = new date_split();
+                console.log( row2[i].wanttime.toString());
+                var datetime = row2[i].wanttime;
+
+                ds.year = datetime.getFullYear();
+                ds.month = datetime.getMonth();
+                ds.day = datetime.getDate();
+                sum[ds.get_today()] += parseFloat(row[i].val);
+                
+                cnt[ds.get_today()] += 1;
+                if(temp[ds.get_today()] != ds.get_week()){
+                    week_count[ds.get_today()] += 1;
+                    temp[ds.get_today()] = ds.get_week();
+                }
+            }
+        }
+        for(var i in cnt){
+        if(cnt[i] > 0){
+        avg[i] = sum[i] / cnt[i];
+    }
+        avg[i] = avg[i].toFixed(2);
+    }
+    today_avg = avg[new Date().getDay()];
+console.log(`**TODAY's AVG = ${today_avg}`);
+
+        res.render('table_waiting', { lists: people, num: num, acc: accounts,timearr: arr,page: pages,avg:today_avg });
+        });
       });
 
 
@@ -435,5 +463,66 @@ app.get('/clinic_end_:id',function(req,res){
 			});
 		}
 	});
+});
+app.get('/analysis',function(req,res){
+    connection.query(`SELECT wanttime, (clinic_end-clinic_start)/60 as val FROM waiting WHERE clinic_start IS NOT NULL AND clinic_end IS NOT NULL`,function(err,row,field){
+        var time_arr = [];
+        var date_split = function(){
+            this.year = 0;
+            this.month = 0;
+            this.day = 0;
+            this.get_today = function(){
+                console.log(`${this.year}-${this.month}-${this.day}`);
+                var date = new Date(`${this.year}-${this.month}-${this.day}`).getDay();
+                return date;
+            };
+
+            this.get_week = function(){
+                var date = new Date(`${this.year}-${this.month}-${this.day}`).getDate();
+                return date;
+            };
+        };
+        var sum = [0,0,0,0,0,0,0];
+        var cnt   = [0,0,0,0,0,0,0];
+        var avg =      [5,5,5,5,5,5,5];
+        var week_count = [0,0,0,0,0,0,0];
+        var temp = [0,0,0,0,0,0,0];
+        for(var i in row){
+            if(row[i].val > 20 || row[i].val < 0){
+                continue;
+            } // if 20min over
+            else{
+                var ds = new date_split();
+                console.log( row[i].wanttime.toString());
+                var datetime = row[i].wanttime;
+
+                ds.year = datetime.getFullYear();
+                ds.month = datetime.getMonth();
+                ds.day = datetime.getDate();
+                sum[ds.get_today()] += parseFloat(row[i].val);
+                
+                cnt[ds.get_today()] += 1;
+                if(temp[ds.get_today()] != ds.get_week()){
+                    week_count[ds.get_today()] += 1;
+                    temp[ds.get_today()] = ds.get_week();
+                }
+            }
+        }
+        var people=[];
+        for(var i in cnt){
+        if(cnt[i] > 0){
+        avg[i] = sum[i] / cnt[i];
+    }
+        avg[i] = avg[i].toFixed(2);
+        console.log(`${i}번째 요일 평균값 : ${avg[i]}`);
+        console.log(`${week_count}`);
+        people[i] = cnt[i] / week_count[i]
+    }
+    res.render('analysis',{last_people:people,avg:avg});
+    });
+
+});
+app.get('/test',function(req,res){
+    res.render('test');
 });
 module.exports = app;
