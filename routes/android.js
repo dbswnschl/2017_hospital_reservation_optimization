@@ -74,29 +74,50 @@ app.get('/get_waiting', function (req, res) {
 });
 
 /* POST home page. */
-var msg;
+
+app.post('/test1', function (req, res){
+
+var userID = req.body.userID;
+var userName = req.body.userName;
+var userBirth = req.body.userBirth;
+var year = req.body.Year;
+var month = req.body.month;
+var day = req.body.day;
+var time = req.body.time;
+var min = req.body.min;
+var memo = req.body.memo;
+var response = {success:true};
+console.log(userID+userName+userBirth);
+res.json(response);
+});
 
 app.post('/add_reservation', function (req, res) {
   var id = req.body.userID;
-  var purpose = req.body.userPurpose;
+  var memo = req.body.userPurpose;
   var day = req.body.bookDay;
   var month = req.body.bookMonth;
   var year = req.body.bookYear;
+  var bookTime = req.body.bookTime;
+  var minute = req.body.bookMin ;
+  var userbirth = req.body.userbirth;
+  var userName  = req.body.userName;
   var peoples;
+  var response = { success: true };
+  var dt = year + "-" + month + "-" + day + " " + bookTime;
+
   if (String(month).length < 2)
     month = "0" + month;
   if (String(day).length < 2)
     day = "0" + day;
-  var bookTime = req.body.bookTime;
-  var response = { success: true };
-  var dt = year + "-" + month + "-" + day + " " + bookTime;
+  
+
   connection.query(`SELECT * FROM accounts WHERE userid = '${id}'`, function (err, row, field) {
     if (!err) {
       if (row.length == 1) {
-        connection.query(`INSERT INTO reservation (usernumber,part,reservationtime,status) VALUES('${row[0].id}','${purpose}','${dt}','0')`, function (err2, row2, field2) {
+        connection.query(`INSERT INTO reservation (usernumber,part,reservationtime,status) VALUES('${row[0].id}','${memo}','${dt}','0')`, function (err2, row2, field2) {
           //connection.query(`INSERT INTO waiting (usernumber,status) VALUES('${row[0].id}','0')`, function(err2,row2,field2){
           if (!err) {
-            console.log(`INSERT INTO reservation (usernumber,part,reservationtime,status) VALUES('${row[0].id}','${purpose}','${dt}','0')`);
+            console.log(`INSERT INTO reservation (usernumber,part,reservationtime,status) VALUES('${row[0].id}','${memo}','${dt}','0')`);
             console.log("[디버그]예약성공");
 
             /*
@@ -135,16 +156,53 @@ app.post('/add_reservation', function (req, res) {
   });
 });
 app.post('/main/information', function (req, res) {
-  var id = req.body.userid;
+  
+  
+  var id = req.body.userid
+  
+  
   var info;
   connection.query(`SELECT * FROM accounts WHERE id = '${id}'`, function (err, row, field) {
     if (!err) {
       info = JSON.stringify(row);
-      res.json(info);
+      //res.json(info);
 
     }
   });
 });
+/*
+app.post('/account_edit', function (req, res) {
+  
+  
+  var id = req.body.userid
+  var name = req.body.userName;
+  var number = req.body.userNumber;
+  var birth = req.body.userBirth;
+  
+  response = { "success" : true };
+
+console.log(id);
+console.log(name);
+console.log(number);
+console.log(birth);
+  
+  connection.query(`SELECT * FROM accounts WHERE id = '${id}'`, function (err, row, field) {
+    if (!err) {
+
+		if(!(row.length == 0) ){
+
+connection.query(`UPDATE accounts SET username = 'name' , birth = 'birth', phone = 'number'
+	WHERE id = '${id}'` , function (err, row, field) {
+    if (!err) {
+
+      
+
+    }
+  });
+});
+
+*/
+
 app.post('/reservationing', function (req, res) {
   var id = req.body.userid;
   connection.query(`INSERT INTO reservation (usernumber,status) VALUES('${id}','0')`, function (err, row, field) {
@@ -204,8 +262,8 @@ app.post('/get_account', function (req, res) {
 });
 app.post('/check_reservation', function (req, res) {
   var userid = req.body.userid;
-  var usernumber;
-  connection.query(`SELECT id, username FROM accounts WHERE userid='${userid}'`, function (error, rows, fields) {
+  var usernumber
+    connection.query(`SELECT id, username FROM accounts WHERE userid='${userid}'`, function (error, rows, fields) {
     usernumber = rows[0].id;
     connection.query(`SELECT * FROM reservation WHERE usernumber='${usernumber}'`, function (err, row, field) {
       var id1 = new Array();
@@ -244,6 +302,7 @@ app.post('/beacon_connect', function (req, res) {
   var reservation_id;
   console.log(userid);
   console.log(uuid);
+  console.log(token);
   connection.query(`SELECT * FROM accounts WHERE userid='${userid}'`, function (error, rows, fields) {
     if (error) {
       console.log(error);

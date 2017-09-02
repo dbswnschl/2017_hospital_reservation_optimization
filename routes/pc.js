@@ -101,7 +101,7 @@ app.get('/table2/:pages', function (req, res) {
 
     }
   });
-});*/ 
+});*/
 /*
 app.get('/reservation', function (req, res) {
   connection.query(`SELECT * FROM accounts WHERE id = '${req.cookies.userid}'`, function (err, rows, fields) {
@@ -147,6 +147,26 @@ app.post('/register',function(req,res){
   var birth = req.body.birth;
   var email = req.body.email;
   var phone = req.body.phone;
+if(id.length < 6 ){
+  console.log("REGISTER REFUSED :: ID Length");
+  res.send("<script>alert('아이디는 6글자 이상으로 입력해 주세요!');window.history.back();</script>")
+}
+if(pw.length < 8){
+  console.log("REGISTER REFUSED :: PW Length");
+  res.send("<script>alert('비밀번호는 8글자 이상으로 입력해 주세요!');window.history.back();</script>")
+}
+if(name.length == 0 || name[0] == ' '){
+  console.log("REGISTER REFUSED :: NAME Length");
+  res.send("<script>alert('올바른 이름을 입력해 주세요!');window.history.back();</script>")
+}
+
+
+connection.query(`SELECT * FROM accounts WHERE userid='${id}'`,function(error,rows,fields){
+if(error){
+  console.log("REGISTER ERROR"+error);
+}else{
+
+if(rows.length == 0){
   connection.query(`INSERT INTO accounts (userid,userpw,username,birth,email,phone) VALUES('${id}','${pw}','${name}','${birth}','${email}','${phone}');`,function(err,row,field){
     if(err){
       console.log("REGISTER ERROR !! : "+err);
@@ -156,6 +176,15 @@ app.post('/register',function(req,res){
       res.send("<script>alert('회원가입에 성공했습니다!'); location.href='/pc/table_waiting';</script>");
     }
   });
+}else{
+  console.log("REGISTER ERROR :: 중복 아이디");
+  res.send("<script>alert('이미 존재하는 아이디 입니다!'); window.history.back(); </script>");
+}
+}
+});
+
+
+
 
 });
 /*
@@ -179,9 +208,9 @@ app.post('/add_reservation',function(req,res){
     }else{
       connection.query(`INSERT INTO waiting (usernumber,part) VALUES ('${rows[0].id}','${part}');`,function(error,row,field){
         if(row.length==0){
-    res.send(`<script>alert('예약에 실패하였습니다.'); location.href='/pc/reservation'</script>`);      
+    res.send(`<script>alert('예약에 실패하였습니다.'); location.href='/pc/reservation'</script>`);
         }else{
-    res.send(`<script>alert('예약에 성공하였습니다.'); location.href='/pc/reservation'</script>`);  
+    res.send(`<script>alert('예약에 성공하였습니다.'); location.href='/pc/reservation'</script>`);
         }
       });
     }
@@ -271,7 +300,7 @@ app.get('/table_reservation',function(req,res){
           res.send(err);
         }
         var accounts = rows;
-      
+
 		//console.log("lists: " + JSON.stringify(people) + "\nacc: " + JSON.stringify(accounts));
         res.render('table_reservation', { lists: people, num: num, acc: accounts });
       });
@@ -325,6 +354,43 @@ app.get('/admin_reservation',function(req,res){
   });
   });
 });
+app.get('/set_condition_0_:id',function(req,res){
+var id = req.params.id;
+    connection.query(`UPDATE waiting SET status = 0 WHERE id='${id}'`,function(err,row,field){
+      if(err){
+        console.log("set_condition_failed");
+      }else{
+        res.send(`<script>location.href='/pc/admin_waiting';</script>`);
+      }
+    });
+
+
+});
+app.get('/set_condition_1_:id',function(req,res){
+var id = req.params.id;
+    connection.query(`UPDATE waiting SET status = 1 WHERE id='${id}'`,function(err,row,field){
+      if(err){
+        console.log("set_condition_failed");
+      }else{
+        res.send(`<script>location.href='/pc/admin_waiting';</script>`);
+      }
+    });
+
+
+});
+
+app.get('/set_condition_2_:id',function(req,res){
+var id = req.params.id;
+    connection.query(`UPDATE waiting SET status = 2 WHERE id='${id}'`,function(err,row,field){
+      if(err){
+        console.log("set_condition_failed");
+      }else{
+        res.send(`<script>location.href='/pc/admin_waiting';</script>`);
+      }
+    });
+
+
+});
 
 app.get('/admin_waiting',function(req,res){
   connection.query(`SELECT * FROM accounts;`,function(err,row,field){
@@ -339,5 +405,35 @@ app.get('/admin_waiting',function(req,res){
 })
 app.get('/admin_answer',function(req,res){
   res.render('admin_answer');
+});
+app.post('/information_edit',function(req,res){
+  var id= req.body.id;
+  connection.query(`UPDATE accounts SET userid= '${req.body.userid}', userpw= '${req.body.userpw}', username='${req.body.username}', birth='${req.body.birth}', email='${req.body.email}',auth='${req.body.auth}', phone='${req.body.phone}' WHERE id = '${id}'`,function(err,row,field){
+ if(err){
+        console.log("edit failed");
+      }else{
+        res.send(`<script>location.href='/pc/admin_information';</script>`);
+      }
+  } );
+});
+app.get('/clinic_end_:id',function(req,res){
+	var num = req.params.id;
+	connection.query(`SELECT id FROM waiting WHERE status<'2'`,function(err,row,field){
+		if(!err){
+			connection.query(`UPDATE waiting SET status= '2' WHERE id='${row[req.params.id].id}';`,function(error,rows,fields){
+				if(!error){
+					console.log(`UPDATE waiting SET status= '2' WHERE id='${row[req.params.id].id}';`);
+
+						connection.query(`UPDATE waiting SET clinic_start= NOW() WHERE status ='0' limit 1;`,function(error2,row2,field2){
+								connection.query(`UPDATE waiting SET clinic_end= NOW() WHERE id='${row[req.params.id].id}';`,function(error3,row3,field3){
+										connection.query(`UPDATE waiting SET status= '1' WHERE status = '0' limit 1`,function(error4,rows4,fields4){
+											res.send(`<script>location.href='/pc/table_waiting';</script>`);
+										});
+								});
+						});
+				}
+			});
+		}
+	});
 });
 module.exports = app;
